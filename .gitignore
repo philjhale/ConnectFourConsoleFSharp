@@ -1,0 +1,7 @@
+*.suo
+
+ConnectFourFSharp.sln.DotSettings.user
+ConnectFourFSharp.userprefs
+bin/
+obj/
+packages/

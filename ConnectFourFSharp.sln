@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ConnectFourFSharp", "ConnectFourFSharp\ConnectFourFSharp.fsproj", "{9C000D5D-DD84-484A-94AB-99818C12BE01}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tests", "Tests\Tests.fsproj", "{456E9D11-85CB-4ECC-AA19-EB31F1DD99EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C000D5D-DD84-484A-94AB-99818C12BE01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C000D5D-DD84-484A-94AB-99818C12BE01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C000D5D-DD84-484A-94AB-99818C12BE01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C000D5D-DD84-484A-94AB-99818C12BE01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{456E9D11-85CB-4ECC-AA19-EB31F1DD99EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{456E9D11-85CB-4ECC-AA19-EB31F1DD99EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{456E9D11-85CB-4ECC-AA19-EB31F1DD99EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{456E9D11-85CB-4ECC-AA19-EB31F1DD99EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
