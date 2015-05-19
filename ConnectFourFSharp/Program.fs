@@ -50,14 +50,14 @@ let main argv =
 
         printfn "%s, enter a column number:" currentPlayer.Name
         
-        let getValidColumnNumber = getValidColumnNumberInput <| Player.getInput currentPlayer.Type
-        let newBoard = getValidDrop <| Board.drop getValidColumnNumber board currentPlayer.Disc
+        let validColumnNumber = getValidColumnNumberInput <| Player.getInput currentPlayer.Type
+        let newBoard = getValidDrop <| Board.drop validColumnNumber board currentPlayer.Disc
         
         Board.showBoard newBoard
 
         // TODO Check for connect four
         // TODO Handle out of bounds input. E.g. Column 100
-        match Board.isConnectFour newBoard 1 1 with
+        match Board.isConnectFour newBoard validColumnNumber with
         | true -> printf "%s wins!" currentPlayer.Name
         | false -> takeTurn newBoard <| List.rev players
 

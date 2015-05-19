@@ -50,13 +50,7 @@ open System
             printf "\n"
     
 
-    // Maybe type GridDirection = {X:int,; Y:int}?
-//    type GridDirection = GridDirection of int * int // x * y
-//    
-//    let up = GridDirection (0,1)  
-//    let right = GridDirection (1,0)  
-//    let upRight = GridDirection (1,1)
-//    let upLeft = GridDirection (-1,1)    
+ 
 
     let isInBounds (board:Board) coordindate =
         try
@@ -66,6 +60,16 @@ open System
         with    
             | :? System.IndexOutOfRangeException -> false
 
+    let getDiscsForCoordinates (board:Board) coordinates =
+        let rec getDiscsForCoordinatesInternal (board:Board) coordinates discs =
+            match coordinates with
+            | (head::tail) -> 
+                let disc = board.[snd head, fst head]
+                getDiscsForCoordinatesInternal board tail (disc::discs)
+            | [] -> discs
+
+        getDiscsForCoordinatesInternal board coordinates []
+
     let rec isConnectFourInList list =
         match list with
         | [Disc.Red;Disc.Red;Disc.Red;Disc.Red] -> true
@@ -73,7 +77,6 @@ open System
         | [] -> false
         | head::tail -> isConnectFourInList tail
 
-       
     let getNextCoordinateInDirection coordindate direction =
         let x = fst coordindate
         let y = snd coordindate
@@ -100,26 +103,47 @@ open System
         let seq = getCoordinatesInDirection board currentCoordinate reversedDirection
         seq |> List.rev |> List.head
 
-    
+    let getAllCoordinatesInDirection board startCordinate direction =
+        let firstCoordinate = getFirstCoordinateInDirection board startCordinate direction
+        getCoordinatesInDirection board firstCoordinate direction
+
+    let getLastDropRowIndex board x =
+        let col = getColumn board x
+        col |> Array.findIndex (fun y -> y <> Disc.Empty)
 
     // TODO Is List.fold useful anywhere?
-    // TODO Change column and row to x and y?
-    // TODO Index or number
-    let isConnectFour board lastDropColumn lastDropRow = 
-//        let directionsToCheck = [up; right; upRight; upLeft]
-//        directionsToCheck 
-//            |> List.iter checkForConnectFour
-        // For each direction
-            // Reverse direction
-            // Find start of sequence
-            // For each element in seq
-                // Get next four. Are they the same colour?
-        false
+    let isConnectFour board lastDropColumnNumber =
+        let lastDropColumnIndex = lastDropColumnNumber - 1
+        let lastDropRowIndex = getLastDropRowIndex board lastDropColumnIndex
 
+        // TODO Fix bugs
+        // TODO There MUST be a way to tidy this up
+        let foundRight = (1, 0)
+                       |> getAllCoordinatesInDirection board (lastDropColumnIndex, lastDropRowIndex)
+                       |> getDiscsForCoordinates board
+                       |> isConnectFourInList
 
+        let foundUp = (0, 1)
+                   |> getAllCoordinatesInDirection board (lastDropColumnIndex, lastDropRowIndex)
+                   |> getDiscsForCoordinates board
+                   |> isConnectFourInList
 
-//        0 0 0 0 0
-//        0 0 0 0 0
-//        0 0 0 0 0
-//        0 0 0 0 0
-//        0 0 0 0 0
+        let foundUpRight = (1, 1)
+                        |> getAllCoordinatesInDirection board (lastDropColumnIndex, lastDropRowIndex)
+                        |> getDiscsForCoordinates board
+                        |> isConnectFourInList
+
+        let foundUpLeft = (-1, 1)
+                        |> getAllCoordinatesInDirection board (lastDropColumnIndex, lastDropRowIndex)
+                        |> getDiscsForCoordinates board
+                        |> isConnectFourInList
+
+//        let stuffs = [(1, 0); (0, 1); (1, 1); (-1, 1)]
+//                    //|> List.fold (fun acc b -> (acc::b)) [] ???
+//                    |> List.map ??
+//                    |> getAllCoordinatesInDirection board (lastDropColumnIndex, lastDropRowIndex)
+//                    |> getDiscsForCoordinates board
+//                    |> isConnectFourInList
+
+        let all = [foundRight; foundUp; foundUpRight; foundUpLeft]
+        all |> List.exists (fun x -> x = true) 
