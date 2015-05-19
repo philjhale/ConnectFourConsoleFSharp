@@ -1,6 +1,7 @@
 ﻿module Board
 open System
 
+    // Not ideal. In theory you could assign Empty to a player
     type Disc = Red | Yellow | Empty
 
     type Board = Disc[,]
@@ -47,6 +48,77 @@ open System
             for x in 0 .. maxX do
                 printf "%A\t" board.[y,x]
             printf "\n"
+    
+
+    // Maybe type GridDirection = {X:int,; Y:int}?
+//    type GridDirection = GridDirection of int * int // x * y
+//    
+//    let up = GridDirection (0,1)  
+//    let right = GridDirection (1,0)  
+//    let upRight = GridDirection (1,1)
+//    let upLeft = GridDirection (-1,1)    
+
+    let isInBounds (board:Board) columnIndex rowIndex =
+        try
+            board.[rowIndex, columnIndex] |> ignore 
+            true
+        with    
+            | :? System.IndexOutOfRangeException -> false
+
+    let rec isConnectFourInList list =
+        match list with
+        | [Disc.Red;Disc.Red;Disc.Red;Disc.Red] -> true
+        | [Disc.Yellow;Disc.Yellow;Disc.Yellow;Disc.Yellow] -> true
+        | [] -> false
+        | head::tail -> isConnectFourInList tail
+
+       
+    let getPrevious columnIndex rowIndex direction =
+        match direction with
+        | (x, y) -> (columnIndex + x, rowIndex + y)
+
+    // This is poo
+    let getStartOfSequence board columnIndex rowIndex direction =
+        let reverseDirection direction = 
+            match direction with
+            | (x, y) -> (x * -1, y * -1)
         
-    let isConnectFour board = 
+        let rev = reverseDirection direction
+
+        let rec findStart board columnIndex rowIndex rev =
+            let previousPoint = getPrevious columnIndex rowIndex rev
+            let previousColumnIndex = fst previousPoint // Awful
+            let previousRowIndex = snd previousPoint
+            match isInBounds board previousColumnIndex previousRowIndex with
+            | true -> findStart board previousColumnIndex previousRowIndex rev
+            | false -> (columnIndex, rowIndex)
+        
+        findStart board columnIndex rowIndex rev
+
+      // TODO
+//    let getSequence board startPoint =
+//        let getSequenceInternal board startPoint [] =
+                // Get next point, if in bounds add to the list and call function. Else return list
+//            match isInBounds board  with
+//            | (x, y) -> 
+
+    // TODO Change column and row to x and y?
+    // TODO Index or number
+    let isConnectFour board lastDropColumn lastDropRow = 
+//        let directionsToCheck = [up; right; upRight; upLeft]
+//        directionsToCheck 
+//            |> List.iter checkForConnectFour
+        // For each direction
+            // Reverse direction
+            // Find start of sequence
+            // For each element in seq
+                // Get next four. Are they the same colour?
         false
+
+
+
+//        0 0 0 0 0
+//        0 0 0 0 0
+//        0 0 0 0 0
+//        0 0 0 0 0
+//        0 0 0 0 0

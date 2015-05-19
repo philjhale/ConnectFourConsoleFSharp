@@ -57,7 +57,7 @@ let main argv =
 
         // TODO Check for connect four
         // TODO Handle out of bounds input. E.g. Column 100
-        match Board.isConnectFour newBoard with
+        match Board.isConnectFour newBoard 1 1 with
         | true -> printf "%s wins!" currentPlayer.Name
         | false -> takeTurn newBoard <| List.rev players
 
