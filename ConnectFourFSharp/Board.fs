@@ -58,9 +58,10 @@ open System
 //    let upRight = GridDirection (1,1)
 //    let upLeft = GridDirection (-1,1)    
 
-    let isInBounds (board:Board) columnIndex rowIndex =
+    let isInBounds (board:Board) coordindate =
         try
-            board.[rowIndex, columnIndex] |> ignore 
+            match coordindate with
+            | (x, y) -> board.[y, x] |> ignore 
             true
         with    
             | :? System.IndexOutOfRangeException -> false
@@ -73,27 +74,27 @@ open System
         | head::tail -> isConnectFourInList tail
 
        
-    let getPrevious columnIndex rowIndex direction =
+    let getNextCoordinateInDrection coordindate direction =
+        let x = fst coordindate
+        let y = snd coordindate
         match direction with
-        | (x, y) -> (columnIndex + x, rowIndex + y)
+        | (dx, dy) -> (x + dx, y + dy)
 
-    // This is poo
-    let getStartOfSequence board columnIndex rowIndex direction =
+    // TODO Change name?
+    let getStartOfSequence board currentCoordinate direction =
         let reverseDirection direction = 
             match direction with
             | (x, y) -> (x * -1, y * -1)
         
-        let rev = reverseDirection direction
+        let reversedDirection = reverseDirection direction
 
-        let rec findStart board columnIndex rowIndex rev =
-            let previousPoint = getPrevious columnIndex rowIndex rev
-            let previousColumnIndex = fst previousPoint // Awful
-            let previousRowIndex = snd previousPoint
-            match isInBounds board previousColumnIndex previousRowIndex with
-            | true -> findStart board previousColumnIndex previousRowIndex rev
-            | false -> (columnIndex, rowIndex)
+        let rec findStart board coordindate reversedDirection =
+            let previousCoordindate = getNextCoordinateInDrection coordindate reversedDirection
+            match isInBounds board previousCoordindate with
+            | true -> findStart board previousCoordindate reversedDirection
+            | false -> currentCoordinate
         
-        findStart board columnIndex rowIndex rev
+        findStart board currentCoordinate reversedDirection
 
       // TODO
 //    let getSequence board startPoint =
