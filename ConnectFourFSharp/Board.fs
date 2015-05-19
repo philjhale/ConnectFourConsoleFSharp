@@ -80,24 +80,7 @@ open System
         match direction with
         | (dx, dy) -> (x + dx, y + dy)
 
-    // TODO Change name?
-    let getStartOfSequence board currentCoordinate direction =
-        let reverseDirection direction = 
-            match direction with
-            | (x, y) -> (x * -1, y * -1)
-        
-        let reversedDirection = reverseDirection direction
-
-        let rec findStart board coordinate reversedDirection =
-            let previousCoordindate = getNextCoordinateInDirection coordinate reversedDirection
-            match isInBounds board previousCoordindate with
-            | true -> findStart board previousCoordindate reversedDirection
-            | false -> coordinate
-        
-        findStart board currentCoordinate reversedDirection
-
     let getCoordinatesInDirection board startCordinate direction =
-        // TODO getStartOfSequence and  getSequence basically do the same thing
         let rec getCoordinatesInDirectionInternal board currentCoordinate direction coordinateList =
            match isInBounds board currentCoordinate with
            | true -> 
@@ -106,6 +89,19 @@ open System
            | false -> List.rev coordinateList
 
         getCoordinatesInDirectionInternal board startCordinate direction []
+
+    // TODO Change name?
+    let getStartOfSequence board currentCoordinate direction =
+        let reverseDirection direction = 
+            match direction with
+            | (x, y) -> (x * -1, y * -1)
+        
+        let reversedDirection = reverseDirection direction
+
+        let seq = getCoordinatesInDirection board currentCoordinate reversedDirection
+        seq |> List.rev |> List.head
+
+    
 
     // TODO Is List.fold useful anywhere?
     // TODO Change column and row to x and y?
