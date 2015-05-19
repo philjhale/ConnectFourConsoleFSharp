@@ -96,16 +96,16 @@ open System
         
         findStart board currentCoordinate reversedDirection
 
-    let getSequence board startCordinate direction =
+    let getCoordinatesInDirection board startCordinate direction =
         // TODO getStartOfSequence and  getSequence basically do the same thing
-        let rec getSequenceInternal board coordinate direction coordinateList =
-           //      Get next point, if in bounds add to the list and call function. Else return list
-           let nextCoordinate = getNextCoordinateInDirection coordinate direction
-           match isInBounds board nextCoordinate with
-           | true -> getSequenceInternal board nextCoordinate direction (nextCoordinate::coordinateList)
-           | false -> coordinateList
+        let rec getCoordinatesInDirectionInternal board currentCoordinate direction coordinateList =
+           match isInBounds board currentCoordinate with
+           | true -> 
+                let nextCoordinate = getNextCoordinateInDirection currentCoordinate direction
+                getCoordinatesInDirectionInternal board nextCoordinate direction (currentCoordinate::coordinateList)
+           | false -> List.rev coordinateList
 
-        getSequenceInternal board startCordinate direction []
+        getCoordinatesInDirectionInternal board startCordinate direction []
 
     // TODO Is List.fold useful anywhere?
     // TODO Change column and row to x and y?

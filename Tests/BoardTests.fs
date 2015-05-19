@@ -29,37 +29,53 @@ let ``Next available drop position is None when column is full``() =
 
  // isInBounds
 [<Test>]
-let ``Inside grid returns true``() =
+let ``Coordinate in in bounds of grid returns true``() =
     let board = Array2D.create 5 5 Disc.Empty
     Board.isInBounds board (1, 1) |> should equal true
 
 [<Test>]
-let ``Length1 outside the grid returns false``() =
+let ``Length1 outside bounds of grid returns false``() =
     let board = Array2D.create 5 7 Disc.Empty
     Board.isInBounds board (1,5) |> should equal false
 
 [<Test>]
-let ``Length2 outside the grid returns false``() =
+let ``Length2 outside bounds of grid returns false``() =
     let board = Array2D.create 7 5 Disc.Empty
     Board.isInBounds board (5,1) |> should equal false
 
 // getStartOfSequence
 [<Test>]
-let ``Start of sequence right``() =
+let ``Get start of sequence right``() =
     let board = Array2D.create 4 4 Disc.Empty
     Board.getStartOfSequence board (2,2) (1,0) |> should equal (0,2)
 
 [<Test>]
-let ``Start of sequence up``() =
+let ``Get start of sequence up``() =
     let board = Array2D.create 4 4 Disc.Empty
     Board.getStartOfSequence board (3,2) (0,1) |> should equal (3,0)
 
 [<Test>]
-let ``Start of sequence up left``() =
+let ``Get start of sequence up left``() =
     let board = Array2D.create 5 5 Disc.Empty
     Board.getStartOfSequence board (0,4) (-1,1) |> should equal (4,0)
 
 [<Test>]
-let ``Start of sequence up right``() =
+let ``Get start of sequence up right``() =
     let board = Array2D.create 5 5 Disc.Empty
     Board.getStartOfSequence board (3, 3) (1,1) |> should equal (0,0)
+
+// getCoordinatesInDirection
+[<Test>]
+let ``Get coordinates in direction going right``() =
+    let board = Array2D.create 5 5 Disc.Empty
+    Board.getCoordinatesInDirection board (2, 3) (1,0) |> should equal [2, 3; 3, 3; 4, 3]
+
+[<Test>]
+let ``Get coordinates in direction going up``() =
+    let board = Array2D.create 4 4 Disc.Empty
+    Board.getCoordinatesInDirection board (0, 0) (0, 1) |> should equal [0, 0; 0, 1; 0, 2; 0, 3]
+
+[<Test>]
+let ``Get coordinates in direction going up right``() =
+    let board = Array2D.create 4 4 Disc.Empty
+    Board.getCoordinatesInDirection board (1, 1) (1, 1) |> should equal [1, 1; 2, 2; 3, 3]
