@@ -90,8 +90,7 @@ open System
 
         getCoordinatesInDirectionInternal board startCordinate direction []
 
-    // TODO Change name?
-    let getStartOfSequence board currentCoordinate direction =
+    let getFirstCoordinateInDirection board currentCoordinate direction =
         let reverseDirection direction = 
             match direction with
             | (x, y) -> (x * -1, y * -1)
