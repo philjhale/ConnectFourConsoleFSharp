@@ -74,7 +74,7 @@ open System
         | head::tail -> isConnectFourInList tail
 
        
-    let getNextCoordinateInDrection coordindate direction =
+    let getNextCoordinateInDirection coordindate direction =
         let x = fst coordindate
         let y = snd coordindate
         match direction with
@@ -88,11 +88,11 @@ open System
         
         let reversedDirection = reverseDirection direction
 
-        let rec findStart board coordindate reversedDirection =
-            let previousCoordindate = getNextCoordinateInDrection coordindate reversedDirection
+        let rec findStart board coordinate reversedDirection =
+            let previousCoordindate = getNextCoordinateInDirection coordinate reversedDirection
             match isInBounds board previousCoordindate with
             | true -> findStart board previousCoordindate reversedDirection
-            | false -> currentCoordinate
+            | false -> coordinate
         
         findStart board currentCoordinate reversedDirection
 
