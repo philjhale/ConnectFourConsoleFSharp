@@ -114,33 +114,19 @@ open System
     
 
     // TODO Is List.fold useful anywhere?
+    // TODO Fix bugs
     let isConnectFour board lastDropColumnNumber =
         let lastDropColumnIndex = lastDropColumnNumber - 1
         let lastDropRowIndex = getLastDropRowIndex board lastDropColumnIndex
 
-        let isConnectFourInDirection board lastDropCoordinate direction =
+        let isConnectFourInternal board lastDropCoordinate direction =
             direction
             |> getAllCoordinatesInDirection board lastDropCoordinate
             |> getDiscsForCoordinates board
             |> isConnectFourInList
 
-        let checkFourInDirection = isConnectFourInDirection board (lastDropColumnIndex, lastDropRowIndex)
-        
-        // TODO Probably a way to shorten this further
-        let isFourRight = checkFourInDirection (1, 0)
-        let isFourUp = checkFourInDirection (0, 1)
-        let isFourUpRight = checkFourInDirection (1, 1)
-        let isFourLeft = checkFourInDirection (-1, 1)
+        let isConnectFourInDirection = isConnectFourInternal board (lastDropColumnIndex, lastDropRowIndex)
+        let allDirections = [(1, 0);(0, 1);(1, 1);(-1, 1)]
+        let isConnectFourInAnyDirection = List.fold (fun acc direction -> (isConnectFourInDirection direction)::acc) [] allDirections  
 
-        // TODO Fix bugs
-        
-
-//        let stuffs = [(1, 0); (0, 1); (1, 1); (-1, 1)]
-//                    //|> List.fold (fun acc b -> (acc::b)) [] ???
-//                    |> List.map ??
-//                    |> getAllCoordinatesInDirection board (lastDropColumnIndex, lastDropRowIndex)
-//                    |> getDiscsForCoordinates board
-//                    |> isConnectFourInList
-
-        let all = [isFourRight; isFourUp; isFourUpRight; isFourLeft]
-        all |> List.exists (fun x -> x = true) 
+        isConnectFourInAnyDirection |> List.exists (fun x -> x = true) 
