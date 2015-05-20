@@ -111,32 +111,29 @@ open System
         let col = getColumn board x
         col |> Array.findIndex (fun y -> y <> Disc.Empty)
 
+    
+
     // TODO Is List.fold useful anywhere?
     let isConnectFour board lastDropColumnNumber =
         let lastDropColumnIndex = lastDropColumnNumber - 1
         let lastDropRowIndex = getLastDropRowIndex board lastDropColumnIndex
 
+        let isConnectFourInDirection board lastDropCoordinate direction =
+            direction
+            |> getAllCoordinatesInDirection board lastDropCoordinate
+            |> getDiscsForCoordinates board
+            |> isConnectFourInList
+
+        let checkFourInDirection = isConnectFourInDirection board (lastDropColumnIndex, lastDropRowIndex)
+        
+        // TODO Probably a way to shorten this further
+        let isFourRight = checkFourInDirection (1, 0)
+        let isFourUp = checkFourInDirection (0, 1)
+        let isFourUpRight = checkFourInDirection (1, 1)
+        let isFourLeft = checkFourInDirection (-1, 1)
+
         // TODO Fix bugs
-        // TODO There MUST be a way to tidy this up
-        let foundRight = (1, 0)
-                       |> getAllCoordinatesInDirection board (lastDropColumnIndex, lastDropRowIndex)
-                       |> getDiscsForCoordinates board
-                       |> isConnectFourInList
-
-        let foundUp = (0, 1)
-                   |> getAllCoordinatesInDirection board (lastDropColumnIndex, lastDropRowIndex)
-                   |> getDiscsForCoordinates board
-                   |> isConnectFourInList
-
-        let foundUpRight = (1, 1)
-                        |> getAllCoordinatesInDirection board (lastDropColumnIndex, lastDropRowIndex)
-                        |> getDiscsForCoordinates board
-                        |> isConnectFourInList
-
-        let foundUpLeft = (-1, 1)
-                        |> getAllCoordinatesInDirection board (lastDropColumnIndex, lastDropRowIndex)
-                        |> getDiscsForCoordinates board
-                        |> isConnectFourInList
+        
 
 //        let stuffs = [(1, 0); (0, 1); (1, 1); (-1, 1)]
 //                    //|> List.fold (fun acc b -> (acc::b)) [] ???
@@ -145,5 +142,5 @@ open System
 //                    |> getDiscsForCoordinates board
 //                    |> isConnectFourInList
 
-        let all = [foundRight; foundUp; foundUpRight; foundUpLeft]
+        let all = [isFourRight; isFourUp; isFourUpRight; isFourLeft]
         all |> List.exists (fun x -> x = true) 
