@@ -26,8 +26,6 @@ open System
         | OutOfBounds of Disc[,]
 
 
-    // TODO Handle errors. Error/success function?
-    // TODO Move failed function position?
     let drop columnNumber board disc =
         let boardCopy = Array2D.copy board
         let dropColumn = getColumn board (columnNumber-1)
@@ -36,11 +34,8 @@ open System
         | Some position -> 
             Array2D.set boardCopy position (columnNumber-1) disc
             Success boardCopy
-        | None -> OutOfBounds board
-        // TODO Column full, more?
+        | None -> OutOfBounds board        
 
-    // TODO Reverse board so it can be more easily displayed
-    // TODO Move elsewhere?    
     let showBoard board =
         let maxY = (Array2D.length1 board) - 1
         let maxX = (Array2D.length2 board) - 1
@@ -111,10 +106,6 @@ open System
         let col = getColumn board x
         col |> Array.findIndex (fun y -> y <> Disc.Empty)
 
-    
-
-    // TODO Is List.fold useful anywhere?
-    // TODO Fix bugs
     let isConnectFour board lastDropColumnNumber =
         let lastDropColumnIndex = lastDropColumnNumber - 1
         let lastDropRowIndex = getLastDropRowIndex board lastDropColumnIndex

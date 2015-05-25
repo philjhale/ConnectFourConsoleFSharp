@@ -34,8 +34,6 @@ open Player
         
         Board.showBoard newBoard
 
-        // TODO Check for connect four
-        // TODO Handle out of bounds input. E.g. Column 100
         match Board.isConnectFour newBoard validColumnNumber with
         | true -> printf "%s wins!" currentPlayer.Name
         | false -> takeTurn newBoard <| List.rev players
