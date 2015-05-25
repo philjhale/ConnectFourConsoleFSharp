@@ -3,7 +3,7 @@
 open Board
 open Player
 
-    let (|Int|_|) str =
+    let private (|Int|_|) str =
         match System.Int32.TryParse(str) with
         | (true,int) -> Some(int)
         | _ -> None
@@ -22,11 +22,10 @@ open Player
             printf "That column is out of bounds, please choose another"
             getValidDrop drop
 
-    let rec takeTurn board players =
-        // Another way. Pass in current player to takenTurn
-        // Recursive call is players |> List.find (fun player -> player.Name <> currentPlayer.Name)
-        let currentPlayer = List.nth players 0
+    let getNextPlayer players currentPlayer =
+        players |> List.find (fun player -> player.Name <> currentPlayer.Name)
 
+    let rec takeTurn board players currentPlayer =
         printfn "%s, enter a column number:" currentPlayer.Name
         
         let validColumnNumber = getValidColumnNumberInput <| Player.getInput currentPlayer.Type
@@ -36,7 +35,7 @@ open Player
 
         match Board.isConnectFour newBoard validColumnNumber with
         | true -> printf "%s wins!" currentPlayer.Name
-        | false -> takeTurn newBoard <| List.rev players
+        | false -> takeTurn newBoard players <| getNextPlayer players currentPlayer
 
     let start player1Name player2Name =
         let human = Player.create player1Name Disc.Red PlayerType.Human
@@ -45,4 +44,4 @@ open Player
         let board = Board.create
         Board.showBoard board
 
-        takeTurn board [human; computer] |> ignore
+        takeTurn board [human; computer] human |> ignore
