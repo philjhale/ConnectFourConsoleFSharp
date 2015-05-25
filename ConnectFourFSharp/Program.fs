@@ -1,6 +1,4 @@
 ﻿module Program
-// Learn more about F# at http://fsharp.net
-// See the 'F# Tutorial' project for more help.
 open Game
 open System
 
@@ -24,6 +22,7 @@ open System
 // TODO getNextAvailableDropPosition Handle column full, board full, more?
 // TODO Reverse board so it can be more easily displayed. E.g. printfn "%A" board
 // TODO Is List.fold useful anywhere?
+// TODO Abstract printfn?
 [<EntryPoint>]
 let main argv = 
     Game.start "Phil" "Computer" |> ignore
