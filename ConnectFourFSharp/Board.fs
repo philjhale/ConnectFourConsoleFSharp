@@ -25,7 +25,6 @@ open System
         | Success of Disc[,]
         | OutOfBounds of Disc[,]
 
-
     let drop columnNumber board disc =
         let boardCopy = Array2D.copy board
         let dropColumn = getColumn board (columnNumber-1)
@@ -44,9 +43,6 @@ open System
                 printf "%A\t" board.[y,x]
             printf "\n"
     
-
- 
-
     let isInBounds (board:Board) coordindate =
         try
             match coordindate with
@@ -110,8 +106,8 @@ open System
         let lastDropColumnIndex = lastDropColumnNumber - 1
         let lastDropRowIndex = getLastDropRowIndex board lastDropColumnIndex
 
-        let isConnectFourInternal board lastDropCoordinate direction =
-            direction
+        let isConnectFourInternal board lastDropCoordinate searchDirection =
+            searchDirection
             |> getAllCoordinatesInDirection board lastDropCoordinate
             |> getDiscsForCoordinates board
             |> isConnectFourInList
