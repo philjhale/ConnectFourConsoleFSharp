@@ -39,3 +39,12 @@ open Player
         match Board.isConnectFour newBoard validColumnNumber with
         | true -> printf "%s wins!" currentPlayer.Name
         | false -> takeTurn newBoard <| List.rev players
+
+    let start player1Name player2Name =
+        let human = Player.create player1Name Disc.Red PlayerType.Human
+        let computer = Player.create player2Name Disc.Yellow PlayerType.Computer
+    
+        let board = Board.create
+        Board.showBoard board
+
+        takeTurn board [human; computer] |> ignore

@@ -2,8 +2,6 @@
 // Learn more about F# at http://fsharp.net
 // See the 'F# Tutorial' project for more help.
 open Game
-open Board
-open Player
 open System
 
 // Board needs to
@@ -25,14 +23,7 @@ open System
 
 [<EntryPoint>]
 let main argv = 
-    printfn "Game started"
-    let human = Player.create "Phil" Disc.Red PlayerType.Human
-    let computer = Player.create "Computer" Disc.Yellow PlayerType.Computer
-    
-    let board = Board.create
-    Board.showBoard board
-
-    takeTurn board [human; computer] |> ignore
+    Game.start "Phil" "Computer" |> ignore
     
     Console.ReadLine() |> ignore
     0 // return an integer exit code
