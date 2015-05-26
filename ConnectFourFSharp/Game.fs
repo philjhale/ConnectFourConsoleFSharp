@@ -8,24 +8,24 @@ open Player
         | (true,int) -> Some(int)
         | _ -> None
 
-    let rec getValidColumnNumberInput getColumnNumberInput =
+    let rec private getValidColumnNumberInput getColumnNumberInput =
         match getColumnNumberInput() with
             | Int i -> i
             | _ -> 
                 printfn "Please enter an integer"
                 getValidColumnNumberInput getColumnNumberInput
 
-    let rec getValidDrop drop =
+    let rec private getValidDrop drop =
         match drop with
         | Success board -> board
         | OutOfBounds board ->
             printf "That column is out of bounds, please choose another"
             getValidDrop drop
 
-    let getNextPlayer players currentPlayer =
+    let private getNextPlayer players currentPlayer =
         players |> List.find (fun player -> player.Name <> currentPlayer.Name)
 
-    let rec takeTurn board players currentPlayer =
+    let rec private takeTurn board players currentPlayer =
         printfn "%s, enter a column number:" currentPlayer.Name
         
         let validColumnNumber = getValidColumnNumberInput <| Player.getInput currentPlayer.Type
