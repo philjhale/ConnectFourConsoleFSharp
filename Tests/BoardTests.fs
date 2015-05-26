@@ -81,6 +81,20 @@ let ``Get coordinates in direction going up right``() =
     Board.getCoordinatesInDirection board (1, 1) (1, 1) |> should equal [1, 1; 2, 2; 3, 3]
 
 // isConnectFour
+let fillColumn columnIndex discs board =
+    let rec fillColumnInternal board columnIndex discs rowIndex =
+        match discs with
+        | head::tail -> 
+            let boardCopy = Array2D.copy board
+            Array2D.set boardCopy rowIndex columnIndex head
+            fillColumnInternal boardCopy columnIndex tail (rowIndex + 1)
+        | [] -> board
+
+    fillColumnInternal board columnIndex discs 0
+
+let createBoard = 
+    Array2D.create 6 7 Disc.Empty // TODO Why does Board.create fail?
+
 //Empty	Empty	Empty	Empty	Empty	Empty	Empty	
 //Empty	Empty	Empty	Empty	Empty	Empty	Empty	
 //Empty	Empty	Empty	Empty	Empty	Empty	Empty	
@@ -89,11 +103,11 @@ let ``Get coordinates in direction going up right``() =
 //Red	Red	    Red	    Red	    Empty	Empty	Empty
 [<Test>]
 let ``Connect four found with four red disc in row``() =
-    let board = Board.create
-    Array2D.set board 0 0 Disc.Red
-    Array2D.set board 0 1 Disc.Red
-    Array2D.set board 0 2 Disc.Red
-    Array2D.set board 0 3 Disc.Red
+    let board = createBoard
+                           |> fillColumn 0 [Disc.Red]
+                           |> fillColumn 1 [Disc.Red]
+                           |> fillColumn 2 [Disc.Red]
+                           |> fillColumn 3 [Disc.Red]
     Board.showBoard board
     Board.isConnectFour board 1 |> should equal true
 
@@ -105,10 +119,10 @@ let ``Connect four found with four red disc in row``() =
 //Red	Red	    Red	    Empty   Empty	Empty	Empty
 [<Test>]
 let ``Connect four NOT found with three red discs in row``() =
-    let board = Array2D.create 6 7 Disc.Empty // TODO Why does Board.create fail?
-    Array2D.set board 0 0 Disc.Red
-    Array2D.set board 0 1 Disc.Red
-    Array2D.set board 0 2 Disc.Red
+    let board = createBoard
+                           |> fillColumn 0 [Disc.Red]
+                           |> fillColumn 1 [Disc.Red]
+                           |> fillColumn 2 [Disc.Red]
     Board.showBoard board
     Board.isConnectFour board 1 |> should equal false
 
@@ -120,11 +134,7 @@ let ``Connect four NOT found with three red discs in row``() =
 //Yellow	Empty	Empty	Empty	Empty	Empty	Empty
 [<Test>]
 let ``Connect four found with four yellow discs in column``() =
-    let board = Array2D.create 6 7 Disc.Empty // TODO Why does Board.create fail?
-    Array2D.set board 0 0 Disc.Yellow
-    Array2D.set board 1 0 Disc.Yellow
-    Array2D.set board 2 0 Disc.Yellow
-    Array2D.set board 3 0 Disc.Yellow
+    let board = createBoard |> fillColumn 0 [Disc.Yellow; Disc.Yellow; Disc.Yellow; Disc.Yellow]
     Board.showBoard board
     Board.isConnectFour board 1 |> should equal true
 
@@ -136,41 +146,39 @@ let ``Connect four found with four yellow discs in column``() =
 //Yellow	Empty	Empty	Empty	Empty	Empty	Empty
 [<Test>]
 let ``Connect four NOT found with three yellow discs in column``() =
-    let board = Array2D.create 6 7 Disc.Empty // TODO Why does Board.create fail?
-    Array2D.set board 0 0 Disc.Yellow
-    Array2D.set board 1 0 Disc.Yellow
-    Array2D.set board 2 0 Disc.Yellow
+    let board = createBoard |> fillColumn 0 [Disc.Yellow; Disc.Yellow; Disc.Yellow]
     Board.showBoard board
     Board.isConnectFour board 1 |> should equal false
 
 //Empty	    Empty	Empty	Empty	Empty	Empty	Empty	
 //Empty	    Empty	Empty	Empty	Empty	Empty	Empty	
 //Empty	    Empty	Empty	Yellow	Empty	Empty	Empty	
-//Empty	    Empty	Yellow	Empty	Empty	Empty	Empty	
-//Empty	    Yellow	Empty	Empty	Empty	Empty	Empty	
-//Yellow	Empty	Empty	Empty	Empty	Empty	Empty
+//Empty	    Empty	Yellow	Red 	Empty	Empty	Empty	
+//Empty	    Yellow	Red 	Red 	Empty	Empty	Empty	
+//Yellow	Red 	Red	    Red 	Empty	Empty	Empty
 [<Test>]
 let ``Connect four found with four yellow discs in up right diagonal``() =
-    let board = Array2D.create 6 7 Disc.Empty // TODO Why does Board.create fail?
-    Array2D.set board 0 0 Disc.Yellow
-    Array2D.set board 1 1 Disc.Yellow
-    Array2D.set board 2 2 Disc.Yellow
-    Array2D.set board 3 3 Disc.Yellow
+    let board = createBoard
+                           |> fillColumn 0 [Disc.Yellow]
+                           |> fillColumn 1 [Disc.Red; Disc.Yellow]
+                           |> fillColumn 2 [Disc.Red; Disc.Red; Disc.Yellow]
+                           |> fillColumn 3 [Disc.Red; Disc.Red; Disc.Red; Disc.Yellow]
+
     Board.showBoard board
     Board.isConnectFour board 4 |> should equal true
 
 //Empty	Empty	Empty	Empty	Empty	Empty	Empty	
 //Empty	Empty	Empty	Empty	Empty	Empty	Empty	
 //Empty	Empty	Empty	Red	    Empty	Empty	Empty	
-//Empty	Empty	Empty	Empty	Red 	Empty	Empty	
-//Empty	Empty	Empty	Empty	Empty	Red	    Empty	
-//Empty	Empty	Empty	Empty	Empty	Empty	Red
+//Empty	Empty	Empty	Yellow	Red 	Empty	Empty	
+//Empty	Empty	Empty	Yellow	Yellow	Red	    Empty	
+//Empty	Empty	Empty	Yellow	Yellow	Yellow	Red
 [<Test>]
-let ``Connect four found with four yellow discs in up left diagonal``() =
-    let board = Array2D.create 6 7 Disc.Empty // TODO Why does Board.create fail?
-    Array2D.set board 0 6 Disc.Red
-    Array2D.set board 1 5 Disc.Red
-    Array2D.set board 2 4 Disc.Red
-    Array2D.set board 3 3 Disc.Red
+let ``Connect four found with four red discs in up left diagonal``() =
+    let board = createBoard
+                           |> fillColumn 6 [Disc.Red]
+                           |> fillColumn 5 [Disc.Yellow; Disc.Red]
+                           |> fillColumn 4 [Disc.Yellow; Disc.Yellow; Disc.Red]
+                           |> fillColumn 3 [Disc.Yellow; Disc.Yellow; Disc.Yellow; Disc.Red]
     Board.showBoard board
     Board.isConnectFour board 4 |> should equal true

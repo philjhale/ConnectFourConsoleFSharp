@@ -100,7 +100,8 @@ open System
 
     let getLastDropRowIndex board x =
         let col = getColumn board x
-        col |> Array.findIndex (fun y -> y <> Disc.Empty)
+        let firstEmptyRowIndex = col |> Array.findIndex (fun y -> y = Disc.Empty)
+        firstEmptyRowIndex - 1
 
     let isConnectFour board lastDropColumnNumber =
         let lastDropColumnIndex = lastDropColumnNumber - 1
