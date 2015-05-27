@@ -62,6 +62,9 @@ open System
     let showBoard board =
         let maxY = (Array2D.length1 board) - 1
         let maxX = (Array2D.length2 board) - 1
+        for x in 0 .. maxX do
+            printf "%d\t" (x+1)
+        printfn ""
         for y in maxY .. -1 .. 0 do
             for x in 0 .. maxX do
                 printf "%A\t" board.[y,x]
