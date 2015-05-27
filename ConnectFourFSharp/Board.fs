@@ -6,34 +6,58 @@ open System
 
     type Board = Disc[,]
 
-    // http://stackoverflow.com/a/2909339
-    let private toArrayFromColumn (arr:_[,]) = 
-      Array.init arr.Length (fun i -> arr.[i, 0])
+    let private isInBounds (board:Board) coordindate =
+        try
+            match coordindate with
+            | (x, y) -> board.[y, x] |> ignore 
+            true
+        with    
+            | :? System.IndexOutOfRangeException -> false
 
     let private getColumn (board:Board) columnIndex =
+        let toArrayFromColumn (arr:_[,]) = 
+            Array.init arr.Length (fun i -> arr.[i, 0])
+
         board.[0..,columnIndex..columnIndex] |> toArrayFromColumn
-    
+
+    let private tryGetColumn (board:Board) columnIndex =
+        match isInBounds board (columnIndex, 0) with
+        | true -> Some (getColumn board columnIndex)
+        | false -> None
+
     let create =
         // length1 is the number of arrays (rows or y)
         // length2 is the size of each array (columns or x)
         Array2D.create 6 7 Disc.Empty
 
     let private getNextAvailableDropPosition dropColumn =
+        dropColumn |> Array.findIndex (fun y -> y = Disc.Empty)
+
+    let private tryGetNextAvailableDropPosition dropColumn =
         dropColumn |> Array.tryFindIndex (fun y -> y = Disc.Empty)
 
     type DropResult =
-        | Success of Disc[,]
-        | OutOfBounds of Disc[,]
+        | Success
+        | OutOfBounds
+        | ColumnFull
 
-    let drop columnNumber board disc =
+    let canDrop board columnNumber = 
+        let columnIndex = columnNumber - 1
+
+        match isInBounds board (columnIndex, 0) with
+        | true ->
+            match tryGetNextAvailableDropPosition <| getColumn board columnIndex with
+            | Some position -> Success
+            | None -> ColumnFull
+        | false -> OutOfBounds
+  
+
+    let drop board disc columnNumber =
         let boardCopy = Array2D.copy board
         let dropColumn = getColumn board (columnNumber-1)
-
-        match getNextAvailableDropPosition dropColumn with
-        | Some position -> 
-            Array2D.set boardCopy position (columnNumber-1) disc
-            Success boardCopy
-        | None -> OutOfBounds board        
+        let rowIndex = getNextAvailableDropPosition dropColumn
+        Array2D.set boardCopy rowIndex (columnNumber-1) disc
+        boardCopy
 
     let showBoard board =
         let maxY = (Array2D.length1 board) - 1
@@ -43,14 +67,6 @@ open System
                 printf "%A\t" board.[y,x]
             printf "\n"
     
-    let private isInBounds (board:Board) coordindate =
-        try
-            match coordindate with
-            | (x, y) -> board.[y, x] |> ignore 
-            true
-        with    
-            | :? System.IndexOutOfRangeException -> false
-
     let private getDiscsForCoordinates (board:Board) coordinates =
         let rec getDiscsForCoordinatesInternal (board:Board) coordinates discs =
             match coordinates with

@@ -8,19 +8,17 @@ open Player
         | (true,int) -> Some(int)
         | _ -> None
 
-    let rec private getValidColumnNumberInput getColumnNumberInput =
+    let rec private getValidColumnNumberInput board getColumnNumberInput =
         match getColumnNumberInput() with
-            | Int i -> i
+            | Int i -> 
+                match Board.canDrop board i with
+                | Success -> i
+                | OutOfBounds | ColumnFull -> 
+                    printfn "You can't drop a disc there fool"
+                    getValidColumnNumberInput board getColumnNumberInput
             | _ -> 
                 printfn "Please enter an integer"
-                getValidColumnNumberInput getColumnNumberInput
-
-    let rec private getValidDrop drop =
-        match drop with
-        | Success board -> board
-        | OutOfBounds board ->
-            printf "That column is out of bounds, please choose another"
-            getValidDrop drop
+                getValidColumnNumberInput board getColumnNumberInput
 
     let private getNextPlayer players currentPlayer =
         players |> List.find (fun player -> player.Name <> currentPlayer.Name)
@@ -28,8 +26,8 @@ open Player
     let rec private takeTurn board players currentPlayer =
         printfn "%s, enter a column number:" currentPlayer.Name
         
-        let validColumnNumber = getValidColumnNumberInput <| Player.getInput currentPlayer.Type
-        let newBoard = getValidDrop <| Board.drop validColumnNumber board currentPlayer.Disc
+        let validColumnNumber = getValidColumnNumberInput board <| Player.getInput currentPlayer.Type
+        let newBoard = Board.drop board currentPlayer.Disc validColumnNumber
         
         Board.showBoard newBoard
 
